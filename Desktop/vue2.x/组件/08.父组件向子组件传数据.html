@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+</head>
+
+<!--子组件通过 属性绑定（v-bind:） 的形式, 绑定父组件的数据给一个属性 -->
+
+<body>
+  <div id="app">
+    <com1 :parents="msg"></com1>
+  </div>
+  <script>
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        msg: '这是父组件的数据'
+      },
+      methods: {},
+      //子组件
+      components: {
+        com1: { //子组件绑定方法在这里绑定，而不是在标签绑定
+          template: '<h3 @click = "funs">这个是子组件，我接受到了父组件的数据为：{{parents}}</h3>',
+          props: ['parents'],
+        },
+      }
+    });
+    // props 中的数据，都是只读的，无法重新赋值
+    // 把父组件传递过来的 parentmsg 属性，先在 props 数组中，定义一下，这样，才能使用这个数据
+  </script>
+</body>
+
+</html>

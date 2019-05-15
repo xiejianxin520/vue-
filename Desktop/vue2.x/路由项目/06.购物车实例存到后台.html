@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="node_modules/vue/dist/vue.js"></script>
+  <style>
+    td {
+      width: 160px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div id='app'>
+    课程：<input type="text" name="" id="" v-model="text">
+    价钱：<input type="text" name="" id="" v-model="price">
+    <input type="submit" value="提交" @click="additme">
+    <ul v-for="(item, index) in classlist" :key="index">
+      <li>课程名称：{{item.text}}---价格为：{{item.price}}
+        <button @click='addchat(index)'> 添加到购物车 </button>
+      </li>
+    </ul>
+    <chathtml :chats='chats'></chathtml>
+  </div>
+  <!-- 购物车组件 -->
+  <template id="temp">
+    <div>
+      <table border="1">
+        <tr>
+          <th>选中</th>
+          <th>课程</th>
+          <th>数量</th>
+          <th>价格</th>
+        </tr>
+        <tr v-for="(chat, index) in chats" :key="index">
+          <td><input type="checkbox" name="" id="" v-model='chat.active'></td>
+          <td>{{chat.text}}</td>
+          <td><input type="button" value="+" @click='addcount(index)'> {{chat.count}} <input type="button" value="-"
+              @click='reducecount(index)'></td>
+          <td>{{chat.price * chat.count}}</td>
+        </tr>
+        <tr>
+          <td colspan="2">选中课程有：选中{{activecount}}项/共{{chatcount}}项</td>
+          <td>总共数量为：{{totalcount}}</td>
+          <td>要付的金额：{{totalprice}}元</td>
+        </tr>
+      </table>
+    </div>
+  </template>
+  <script>
+    //购物车的组件
+    var chathtml = {
+      template: "#temp",
+      props: ['chats'],
+      methods: {
+        //加法数量
+        addcount(index) {
+          this.chats[index].count++
+        },
+        //减少数量
+        reducecount(index) {
+          if (this.chats[index].count <= 1) {
+            if (window.confirm('请问是否要删除' + this.chats[index].text + '项目课程呢？？')) {
+              this.chats.splice(index, 1)
+            }
+          } else {
+            this.chats[index].count--
+          }
+        }
+
+      },
+      computed: {
+        chatcount() { //计算总共几项项目
+          return this.chats.length
+        },
+        activecount() { //被选中的项目 要选择filter过滤返还数组
+          return this.chats.filter(a => a.active).length
+        },
+        totalprice() { //计算总价格，需要遍历数组中每个元素，但计算前提是要有v.active
+          var total = 0;
+          this.chats.forEach(v => {
+            if (v.active) {
+              total += v.price * v.count
+            }
+          });
+          return total
+        },
+        totalcount() { //计算总数量
+          var totalsum = 0;
+          this.chats.forEach(v => {
+            if (v.active) {
+              totalsum += v.count
+            }
+          })
+          return totalsum
+        }
+      },
+      watch: { //监听购物车数组，每当监听到改变就存进本地存储做数据持久化
+        chats: {
+          handler() { //深度监听这个购物车数组一改变就他
+            window.localStorage.setItem('keyss', JSON.stringify(this.chats))
+          },
+          deep: true
+        }
+      }
+    }
+
+
+    //父组件实例
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        classlist: [{
+            text: 'php',
+            price: 20
+          },
+          {
+            text: 'css',
+            price: 10
+          },
+          {
+            text: 'vue',
+            price: 200
+          },
+          {
+            text: 'javascript',
+            price: 10
+          }
+        ],
+        text: '',
+        price: '',
+        chats: [{
+          active: true,
+          text: 'node',
+          count: 5,
+          price: 50
+        }]
+
+      },
+      methods: {
+        //添加项目
+        additme() {
+          this.classlist.push({
+            text: this.text,
+            price: this.price
+          });
+          this.text = this.price = "";
+        },
+        //添加到购物车
+        // 要先判断原先购物车里已经有没有这个项目， 有的话数量加1就可以， 没有就新增加在购物车数组上去
+        addchat(index) {
+          var newitem = this.classlist[index]; //接受到点击这个新数组
+          var relustobj = this.chats.find(a => a.text === newitem.text); //然后判断这个数组有没有之前在购物车里面
+          if (relustobj) {
+            this.chats.count++
+          } else {
+            this.chats.push({
+              ...newitem, //对象中的扩展运算符(...)用于取出参数对象中的所有可遍历属性，拷贝到当前对象之中
+              active: true,
+              count: 1,
+            })
+          }
+        }
+      },
+      components: {
+        chathtml
+      },
+      created() { // 获取本地存储数据,然后赋值给购物车数组,因为保存数据是json字符串模式，要转换后赋值
+        let newobj = window.localStorage.getItem('keyss');
+        this.chats = JSON.parse(newobj)
+      },
+    })
+  </script>
+</body>
+
+</html>

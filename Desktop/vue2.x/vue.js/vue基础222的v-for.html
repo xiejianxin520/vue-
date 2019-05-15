@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue1.js"></script>
+</head>
+<body>
+    <div id="app">
+        <ul>
+            <!-- 遇到重复的数组 -->
+            <!-- vue1.0的写法 -->
+            <li v-for = '(index,item) in lists' track-by ='$indx'>{{index}}--{{item}}</li>
+            <!-- vue2.0的写法 -->
+            <li v-for ='(item,index) in list' :key ='index'>{{index}}--{{item}}</li>
+        </ul>
+    </div>
+</body>
+<script>
+        new Vue({
+            el:'#app',
+            data:{
+                lists:[1,2,3,4,5,5],
+                user:{uname:'xjx',age:10}
+            }
+        })
+    </script>
+</html>
+</html>

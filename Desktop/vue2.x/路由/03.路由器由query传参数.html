@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+  <script src="./lib/vue-router-3.0.1.js"></script>
+
+</head>
+
+
+<body>
+    <div id="app">
+        <router-link to="/login?id=24&name=kobe">登陆</router-link>
+        <router-link to="/regsin">注册</router-link>
+        <router-view></router-view>
+      </div>
+      <script>
+        const login = {
+          template: '<h3>登陆---{{this.msg}}--{{$route.query.id}}--{{$route.query.name}}</h3>',
+          data() {
+            return {
+              msg: 'route的插值表达式跟我一样'
+            }
+          },
+          created() {
+            console.log(this.$route);
+            console.log(this.$route.query.id);
+          }
+        }
+      
+        const regsin = {
+          template: '<h3>注销</h3>'
+        }
+      
+        const router = new VueRouter({
+          routes: [{
+              path: '/',
+              redirect: '/login'
+            },
+            {
+              path: '/login',
+              component: login
+            },
+            {
+              path: '/regsin',
+              component: regsin
+            }
+          ]
+        })
+      
+        let vm = new Vue({
+          el: '#app',
+          data: {},
+          methods: {},
+          router
+        });
+      </script>
+</body>
+
+</html>

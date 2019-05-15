@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <comp></comp>
+  </div>
+  <template id="temp1">
+    <h6>这是要在模板中而且在app外面设置，，全局组件</h6>
+  </template>
+  <!-- app2弄私有的 -->
+  <div id="app2">
+    <span>APP2：这下面是是APP2的区域</span>
+    <comp></comp>
+    <siyoude></siyoude>
+  </div>
+  <template id="temp2">
+    <h3>这是APP2私有的组件</h3>
+  </template>
+
+  <script>
+    //这是全局组件
+    Vue.component('comp', {
+      template: '#temp1'
+    })
+
+    let vm = new Vue({
+      el: '#app',
+      data: {},
+      methods: {}
+    });
+
+    let vm2 = new Vue({
+      el: '#app2',
+      data: {},
+      methods: {},
+      components: { //自定义一个私有组件,里面要包含一个对象
+        siyoude: {
+          template: '#temp2'
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

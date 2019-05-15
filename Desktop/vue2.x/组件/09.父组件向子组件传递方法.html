@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <input type="button" value="我是父组件的方法" @click='fuclick'>
+    <!-- 子组件通过事件绑定父组件的fuclick方法，给func这个的事件方法 -->
+    <com2 @func='fuclick'></com2><!-- .**这个只是模板，只能用来绑定方法和属性来传递，不能直接使用 -->
+  </div>
+  <template id="tem2">
+    <div>
+      <h3>这是子组件</h3>
+      <input type="button" value="点击我这个子组件可以触法父组件的方法" @click='sonclick'>
+    </div>
+  </template>
+  <script>
+    var com2 = {
+      template: '#tem2',
+      data() {
+        return {
+          sondata: {
+            name: '我是子组件里面数据,我可以传入给父组件，然后赋值去修改父组件的数据',
+            age: 18
+          }
+        }
+      },
+      methods: {
+        sonclick() {
+          this.$emit('func', 123, this.sondata.name)
+          //可以传统形参方式，把子组件的数据传统给父组件
+        }
+      },
+    }
+    // 在子组件通过this.$emit可以调用func这个事件方法，后会作用实现调用到父组件的方法fuclick，
+    // 就可以实现子组件点击事件，实现父组件的方法
+    // this.$emit('func', 形参)
+
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        fudata: null
+      },
+      methods: {
+        fuclick(a, b) { //b是子组件的形参，是子组件数据
+          console.log('我是父组件的方法' + a + b + '....................');
+          //子组件里面数据,我可以传入给父组件，然后赋值去修改父组件的数据
+          this.fudata = b;
+          console.log(this.fudata);
+        }
+      },
+      components: {
+        com2
+      }
+    });
+  </script>
+</body>
+
+</html>

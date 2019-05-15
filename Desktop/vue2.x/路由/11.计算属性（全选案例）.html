@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <input type="checkbox" name="" id="" v-model="checkall">全选
+    <br>
+    <input type="checkbox" name="" id="" v-for="(item, index) in items" :key="index" v-model="item.value">
+  </div>
+  <script>
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        items: [{
+          value: true
+        }, {
+          value: false
+        }, {
+          value: true
+        }]
+      },
+      methods: {},
+      computed: { //itm是大项，itms是小项
+        checkall: { //get（）设置单向绑定的
+          get() { //设置每一小项控制大项（全选按钮），用every（）每当一项false九设置返回false
+            return this.items.every(function (itm) {
+              return itm.value
+            })
+          },
+          set(val) { //双向绑定  //遍历每一个小的,把大的值传给每一个小的
+            //val是checkall的最新属性值，
+            return this.items.forEach(itm => itm.value = val)
+          }
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

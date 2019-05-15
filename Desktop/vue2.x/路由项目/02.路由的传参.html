@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="node_modules/vue/dist/vue.js"></script>
+  <script type="text/javascript" src="node_modules/vue-router/dist/vue-router.js"></script>
+</head>
+
+<body>
+  <div id='app'>
+    <router-link :to="{name:'login',query:{id:5}}">登陆</router-link> <!-- 查询参 /login?id=24 -->
+    <router-link :to="{name:'regsin',params:{ids:23}}">注册</router-link> <!-- 2 路由参数regsin/23 -->
+    <button @click='jslink'>js跳转传参。在view绑定key属性</button>
+    <router-view :key="$route.fullPath"></router-view> <!-- 如果js跳转传递路径相同，而参数不同，则不会刷新页面，所以要在router-view绑定key属性 -->
+  </div>
+  <script>
+    //创建登陆注册组件
+    var login = {
+      template: `
+				<div>我是登录页面 
+					<span>这是我获取到的参数： {{ msg }}</span>
+				</div>
+			`,
+      data() {
+        return {
+          msg: ""
+        }
+      },
+      created() {
+        console.log(this.$route);
+        this.msg = this.$route.query.id
+      },
+    }
+
+    //注册组件
+    var regsin = {
+      template: `
+				<div>我是注册页面
+					<span>这是我获取到的路由参数：{{ ids }}</span>
+				</div>
+      `,
+      //   data() {
+      //     return {
+      //       msg2: ""
+      //     }
+      //   },
+      //   created() {
+      //     console.log(this.$route)
+      //     this.msg2 = this.$route.query.id
+      //   },
+      props: ['ids']
+    }
+
+
+    //安装路由插件
+    Vue.use(VueRouter);
+    //创建路由对象
+    const router = new VueRouter({
+      routes: [{
+          path: '/login',
+          name: 'login',
+          component: login
+        },
+        {
+          path: '/regsin/:ids', //params传参需要在后面加：ids
+          name: 'regsin',
+          props: true, //简写模式，绑定属性key
+          component: regsin
+        }
+      ]
+    })
+    let vm = new Vue({
+      el: '#app',
+      data: {},
+      methods: {
+        jslink() {
+          this.$router.push({
+            name: 'login',
+            query: {
+              id: '我是js跳转的'
+            }
+          })
+        }
+      },
+      components: {},
+      router
+    });
+  </script>
+</body>
+
+</html>

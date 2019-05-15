@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+  <link rel="stylesheet" href="./lib/animate.css">
+  <!-- 入场样式 bounceIn    离场 bounceOut -->
+  <!-- animate.css"要加这个animated基本元素 -->
+
+</head>
+
+<body>
+  <div id="app">
+    <input type="button" value="点击" @click='flag =!flag'>
+    <!-- <transition enter-active-class="animated bounceIn" leave-active-class="animated bounceOut">
+      <h3 v-show='flag'>这是一个H3</h3>
+    </transition> -->
+
+    <!-- 绑定属性 :duration="毫秒值" 来统一设置 入场 和 离场 时候的动画时长 -->
+    <transition enter-active-class=" bounceIn" leave-active-class="bounceOut" :duration="{enter:200,
+      leave:500
+    }">
+      <h3 v-show='flag' class='animated'>这是一个H3</h3>
+    </transition>
+  </div>
+</body>
+<script>
+  let vm = new Vue({
+    el: '#app',
+    data: {
+      flag: false
+    },
+    methods: {}
+  });
+</script>
+
+</html>

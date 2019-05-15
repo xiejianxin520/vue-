@@ -1,0 +1,11 @@
+CACHE MANIFEST
+#注释
+#需要
+#CACHE:
+
+#每一次都需要从服务获取的文件清单
+#NETWORK:
+
+#找不到，用其他文件代替
+#FALLBACK:
+../images/1555.jpg ../images/5.jpg

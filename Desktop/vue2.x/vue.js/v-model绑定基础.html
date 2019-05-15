@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue1.js"></script>
+</head>
+<body>
+    <id id="app">
+        <form action="#">
+            <input type="text"  id="un" v-model='user.uname'>
+            <input type="password"  id="ps" v-model='user.upwd'>
+            <input type="submit" v-on:click='submit' value="注册">
+        </form>
+    </id>
+    <script>
+        var vm = new Vue({  
+            el:'#app',
+            data:{
+                user:{
+                    uname:'',
+                    upwd:''
+                }
+            },
+            methods:{
+                submit:function(){
+                    alert(this.user.uname+'密码为'+this.user.upwd );
+                }
+            }
+
+        }) 
+     </script>
+</body>
+</html>

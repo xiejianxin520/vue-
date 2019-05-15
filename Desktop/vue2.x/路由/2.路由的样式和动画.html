@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+  <!-- 1. 安装 vue-router 路由模块 -->
+  <script src="./lib/vue-router-3.0.1.js"></script>
+  <style>
+    /* 默认本身拥有的类 */
+    /* .router-link-active, */
+
+    .myclass {
+      background-color: yellowgreen;
+      font-size: 35px;
+    }
+
+    .v-enter,
+    .v-leave-to {
+      opacity: 0;
+      transform: translateX(150px);
+    }
+
+    .v-enter-active,
+    .v-leave-active {
+      transition: all 0.5s ease;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div id="app">
+    <router-link to="/login">登陆</router-link>
+    <router-link to="/regsin">注册</router-link>
+
+    <transition mode="out-in">
+      <!-- 这里是mode，不是model -->
+      <router-view></router-view>
+    </transition>
+
+  </div>
+  <script>
+    const login = {
+      template: "<h3>登陆</h3>"
+    }
+    const regsin = {
+      template: "<h3>注册</h3>"
+    }
+    const router = new VueRouter({
+      routes: [{
+          path: '/',
+          redirect: '/login'
+        },
+        {
+          path: '/login',
+          component: login
+        },
+        {
+          path: '/regsin',
+          component: regsin
+        }
+      ],
+      linkActiveClass: 'myclass' //这是向路由构造函数添加的一个属性，来修改他默认的类，
+    })
+    let vm = new Vue({
+      el: '#app',
+      data: {},
+      methods: {},
+      router
+    });
+  </script>
+</body>
+
+</html>

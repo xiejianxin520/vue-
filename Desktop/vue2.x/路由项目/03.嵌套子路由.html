@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="node_modules/vue/dist/vue.js"></script>
+  <script type="text/javascript" src="node_modules/vue-router/dist/vue-router.js"></script>
+</head>
+
+<body>
+  <div id='app'>
+    <!-- 这里是跟组件 -->
+    <router-link to="/nav">点我进去导航信息</router-link>
+    <router-view></router-view>
+  </div>
+  <template id="nav">
+    <div>
+      <!-- 这里是点击/nav，显示的内容 -->
+      <router-link to="/nav/index">首页</router-link>
+      <router-link :to="{name:'nav.help'}">帮助 </router-link>
+      <router-link :to="{name:'nav.message'}">个人信息</router-link>
+      <router-link :to="{name:'nav.mine'}">我的</router-link>
+      <hr>
+      <router-view></router-view>
+    </div>
+  </template>
+
+  <script>
+    //导航组件
+    var nav = {
+      template: "#nav"
+    }
+    //导航里面的子组件
+    var index = {
+      template: `<div>首页</div>`
+    }
+    var help = {
+      template: `<div>帮助</div>`
+    }
+    var message = {
+      template: `<div>个人信息</div>`
+    }
+    var mine = {
+      template: `<div>我的</div>`
+    }
+    Vue.use(VueRouter);
+
+
+    const router = new VueRouter({
+      routes: [
+        // {
+        //   path: "",
+        //   redirect: "/nav"
+        // },
+        {
+          path: '/nav',
+          name: 'nav',
+          component: nav,
+          children: [{
+              path: "index",
+              name: "nav.index",
+              component: index
+            },
+            {
+              path: "help",
+              name: "nav.help",
+              component: help
+            },
+            {
+              path: "message",
+              name: "nav.message",
+              component: message
+            },
+            {
+              path: "mine",
+              name: "nav.mine",
+              component: mine
+            },
+            {
+              path: "",
+              redirect: "/nav/index"
+            },
+          ]
+        }
+      ]
+    })
+
+    let vm = new Vue({
+      el: '#app',
+      data: {},
+      methods: {},
+      components: {},
+      router
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>改造</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+  <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="./lib/bootstrap-3.3.7.css">
+</head>
+
+<body>
+  <div id="app">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">添加品牌</h3>
+      </div>
+      <div class="panel-body form-inline">
+        <label>
+          name:
+          <input type="text" name="" id="" class="form-control" v-model='name'>
+        </label>
+        <input type="button" value="添加" class='btn btn-primary' @click='add()'>
+      </div>
+    </div>
+
+    <table class="table table-bordered table-hover table-striped">
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>name</th>
+          <th>time</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for='itme in list' :key='itme.id'>
+          <td>{{itme.id}}</td>
+          <td>{{itme.name}}</td>
+          <td>{{itme.ctime}}</td>
+          <td><a href="" @click.prevent='del(itme.id)'>删除</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <script>
+    // 如果我们通过全局配置了，请求的数据接口 根域名，则 ，在每次单独发起 http 请求的时候，请求的 url 路径，应该以相对路径开头，前面不能带 /  ，否则 不会启用根路径做拼接；
+    Vue.http.options.root = 'http://kerys.pythonanywhere.com/';
+
+    // 全局启用 emulateJSON 选项，就不用每个post请求都写{ emulateJSON: true}
+    //  Vue.http.options.emulateJSON = true;
+
+    var vm = new Vue({
+      el: "#app",
+      data: {
+        name: '',
+        list: []
+      },
+      methods: {
+        add() { //添加数据
+          this.$http.post('api/addprod/', {
+            name: this.name
+          }, {
+            emulateJSON: true
+          }).then(result => {
+            console.log(result.body);
+            if (result.body.status === 'success') {
+              this.getdata() //添加成功后，再调用此方法再将新的所有数据渲染页面
+              // 清空 name 
+              this.name = '';
+            } else {
+              alert('获取新数据失败')
+            }
+          })
+        },
+        getdata() { //获取所有数据渲染页面
+          this.$http.get('api/getprodlist').then(result => {
+            console.log(result.body);
+            // 注意： 通过 $http 获取到的数据，都在 result.body 中放着
+            if (result.body.status === "success") {
+              this.list = result.body.message;
+            } else {
+              alert('获取失败')
+            }
+          })
+        },
+        del(a) {
+          this.$http.get('api/delprod/' + a).then(result => {
+            if (result.body.status === "success") {
+              this.getdata();
+            } else {
+              alert('删除失败')
+            }
+          })
+          // alert(a);
+        }
+      },
+      created() { // 当 vm 实例 的 data 和 methods 初始化完毕后，vm实例会自动执行created 这个生命周期函数
+        this.getdata();
+      }
+    })
+  </script>
+</body>
+
+</html>

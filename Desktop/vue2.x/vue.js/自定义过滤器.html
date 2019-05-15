@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue1.js"></script>
+</head>
+<body>
+    <div id="app">
+        {{time | detefmt }}
+    </div>
+    <div id="app1">
+        {{time | detefmt }}
+    </div>
+    <script>
+    Vue.filter('detefmt',function(input){
+                var res ='';
+                var year = input.getFullYear();
+                var month = input.getMonth() + 1;
+                var day = input.getDate();
+
+                res = year +'-'+ month + '-'+ day ;
+
+                 return res;
+            })
+       
+    new Vue({
+        el:'#app',
+        data:{
+            time:new Date()
+        }
+        // filters:{
+        //     detefmt:function(input){
+        //         var res ='';
+        //         var year = input.getFullYear();
+        //         var month = input.getMonth() + 1;
+        //         var day = input.getDate();
+
+        //         res = year +'-'+ month + '-'+ day ;
+
+        //         return res;
+        //     }
+        // }
+    })
+    new Vue({
+        el:'#app1',
+        data:{
+            time:new Date()
+        }
+    })
+    </script>
+</body>
+</html>

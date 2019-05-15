@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+  <script src="./lib/vue-router-3.0.1.js"></script>
+
+</head>
+<div id="app">
+  <router-link to="/fuqin">登陆和注册操作界面</router-link>
+  <router-view></router-view>
+</div>
+<template id="temp">
+  <div>
+    <h1>这是登陆和操作界面，下面可以进行登陆和操作</h1>
+    <router-link to="/fuqin/login">登陆</router-link> <!-- 这个链接一定要写/fuqin/login的路径，因为他在父组件里面 -->
+    <router-link to="/fuqin/regsin">注册</router-link>
+    <router-view></router-view>
+
+  </div>
+</template>
+<script>
+  //父组件模板
+  const fuqin = {
+    template: '#temp'
+  }
+  const login = {
+    template: '<h3>登陆</h3>',
+  }
+
+  const regsin = {
+    template: '<h3>注销</h3>'
+  }
+
+  const router = new VueRouter({
+    routes: [{
+      path: '/fuqin',
+      component: fuqin,
+      children: [{
+          path: 'login',
+          component: login
+        },
+        {
+          path: 'regsin',
+          component: regsin
+        }
+      ]
+    }]
+  })
+  // 使用 children 属性，实现子路由，同时，子路由的 path 前面，不要带 / ，否则永远以根路径开始请求，这样不方便我们用户去理解URL地址
+
+
+  let vm = new Vue({
+    el: '#app',
+    data: {},
+    methods: {},
+    router
+  });
+</script>
+
+<body>
+
+</body>
+
+</html>

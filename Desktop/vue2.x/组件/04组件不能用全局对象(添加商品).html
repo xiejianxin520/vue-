@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <comphtml></comphtml>
+    <hr>
+    <comphtml></comphtml>
+    <hr>
+    <comphtml></comphtml>
+    <hr>
+  </div>
+
+  <template id="temp">
+    <div>
+      <input type="button" value="点击添加+1" @click="add">
+      <h3>{{val}}</h3>
+    </div>
+  </template>
+  <script>
+    //如果定义一个全局对象的话，全面三个html标签都会指向全局的对象，
+    //如果里面各自弄的话，自会自身调用。自身里面找新的对象
+    // var dataObj = { val: 0 }
+
+
+    Vue.component('comphtml', {
+      template: "#temp",
+      data: function () {
+        // return dataObj
+        return {
+          val: 0
+        }
+      },
+      methods: {
+        add() {
+          this.val++
+        }
+      }
+    })
+
+
+    var vm = new Vue({
+      el: '#app',
+      data: {},
+      methods: {}
+    });
+  </script>
+</body>
+
+</html>

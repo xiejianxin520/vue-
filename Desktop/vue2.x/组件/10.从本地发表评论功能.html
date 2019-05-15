@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+  <link rel="stylesheet" href="./lib/bootstrap-3.3.7.css">
+  <style>
+    #id1 {
+      margin: 10px 0px 20px;
+    }
+
+    * {
+      list-style-type: none;
+    }
+
+    a {
+      font-size: 15px;
+      color: green
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 父组件，评论区 -->
+  <div id="app">
+    <comps @func='start'></comps>
+    <ul class="list-group">
+      <li class="list-group-item" v-for='item in list' :key=item.id>
+        <span class="badge"><a href="" @click.prevent='del'>删除</a></span>
+        <span class="badge">评论人:{{item.user}}</span>
+
+        {{item.content}}
+
+      </li>
+    </ul>
+  </div>
+  <!-- 子组件，发表评论区 -->
+  <template id='temp1'>
+    <div id='id1'>
+      <div class='form-group'>
+        <label>评论人：</label>
+        <input type="text" name="" id="" class='form-control' v-model="user">
+      </div>
+      <div class='form-group'>
+        <label>评论内容：</label>
+        <input type="text" name="" id="" class='form-control' v-model="content">
+      </div>
+      <div id="form-group">
+        <input type="button" value="提交评论" class='btn btn-primary' @click="postcom">
+      </div>
+    </div>
+  </template>
+  <script>
+    //子组件。发表评论
+    var comps = {
+      template: '#temp1',
+      data() {
+        return {
+          user: '',
+          content: ''
+        }
+      },
+      methods: {
+        // 保持本地，
+        // 第一步： 先获取当前评论数据先作为一个的对象(格式要以list的例子一样)
+        // 第二步， 获取本地存取的先前对象， 要把json.parse转化为对象格式后，与第一步的对象组成一个新的对象
+        // 注意：如果获取到的 localStorage 中的 评论字符串，为空不存在， 则  可以 返回一个 '[]' 
+        // 第三步， 新对象转化为JOSN保存在本地
+        postcom() {
+          if (this.user === '' && this.content === '') {
+            alert('请输入内容，谢谢')
+            return
+          }
+          // 第一步
+          var dataObj = {
+            id: Date.now(),
+            user: this.user,
+            content: this.content
+          };
+          // 第二步
+          var newobj = JSON.parse(localStorage.getItem('keys') || '[]')
+          newobj.unshift(dataObj)
+          // 第三步， 新对象转化为JOSN保存在本
+          localStorage.setItem('keys', JSON.stringify(newobj))
+          this.user = this.content = ''
+          //调用父组件的start方法，点击提交按钮时候可以渲染页面
+          this.$emit('func')
+        }
+      }
+    }
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        list: [{
+            id: Date.now(),
+            user: '李白',
+            content: '天生我材必有用'
+          },
+          {
+            id: Date.now(),
+            user: '江小白',
+            content: '劝君更尽一杯酒'
+          },
+          {
+            id: Date.now(),
+            user: '小马',
+            content: '我姓马， 风吹草低见牛羊的马'
+          }
+        ]
+      },
+      methods: { //一开始时候页面就有后台保存数据
+        start() {
+          var newlist = JSON.parse(localStorage.getItem('keys'));
+          this.list = newlist;
+        },
+        del() {
+          localStorage.removeItem('keys');
+          this.start();
+        }
+      },
+      created() { //页面加载时候就调用，渲染页面
+        this.start(); //************************这里一定用this
+      },
+      components: {
+        comps
+      }
+    });
+  </script>
+</body>
+
+</html>

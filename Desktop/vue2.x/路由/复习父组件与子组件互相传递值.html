@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+  <script src="./lib/vue-router-3.0.1.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <h3>我是父组件：这是从儿子那边收到信息： {{fromson}}</h3>
+    <hr>
+    <hr>
+    <com :parents='msg' @func='fuclick'></com> <!-- ，这是个父元素容器收纳子模板而已， -->
+  </div>
+  <template id="temp">
+    <div>
+      <h3>我是子组件,我收到父组件的信息：{{parents}}</h3>
+      <input type="button" value="点击我这个子组件方法可以传递信息给父亲" @click='sonclick'>
+    </div>
+  </template>
+  <script>
+    var son = {
+      template: '#temp',
+      data() {
+        return {
+          sonmsg: '回报父亲花花给他,'
+        }
+      },
+      props: ['parents'],
+      methods: {
+        sonclick() {
+          // console.log(this.parents);
+          this.$emit('func', this.sonmsg)
+        }
+      },
+
+    }
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        msg: '我是父亲，我要100元信息给我儿子',
+        fromson: ''
+      },
+      methods: {
+        fuclick(a) {
+          this.fromson = a
+        }
+      },
+      components: {
+        com: son
+      }
+    });
+  </script>
+</body>
+
+</html>

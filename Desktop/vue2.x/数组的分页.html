@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        const pages = [];
+        list.forEach((item, index) => {
+            const page = Math.floor(index / 8)
+            console.log('第一次结果' + pages[page]);
+            if (!pages[page]) {
+                pages[page] = []
+                console.log('我只执行')
+                console.log(pages[page]);
+            }
+            pages[page].push(item)
+            console.log('下标为' + page);
+        })
+        console.log('最终数组为下面 ');
+        console.log(pages);
+    </script>
+</body>
+
+</html>

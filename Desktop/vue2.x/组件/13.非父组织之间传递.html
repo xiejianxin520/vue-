@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+</head>
+
+<body>
+  <div id='app'>
+    <headhtml></headhtml>
+    <hr>
+    <bodyer></bodyer>
+    <hr>
+    <foothtml></foothtml>
+  </div>
+
+  <script>
+    //中间组件
+    Vue.prototype.$zhongj = new Vue();
+    const headhtml = {
+      template: `<div>我是头部,我可以接受到信息为：{{headermsg}}</div>`,
+      data() {
+        return {
+          headermsg: '我是头部信息'
+        }
+      },
+      created() {
+        // let self = this;
+        // self.$zhongj.$on('sending', function (a) {
+        //   self.headermsg = a;
+        // })
+
+        //用箭头函数可以改变函数作用御,1.不然回调函数里面的this会指向this.$zhongj,这个里面是没东西
+        //2.所以回调函数里面this九指向headhtml这个实例
+        this.$zhongj.$on('sending', val => {
+          this.headermsg = val
+        })
+
+      }
+    }
+    const bodyer = {
+      template: `<div>我是主体部，没卵用现在</div>`
+    }
+    const foothtml = {
+      template: `<div>我是脚部
+          <button @click = 'sendhead'>点我可以送信息给头部组件</button>
+        </div>`,
+      methods: {
+        sendhead() {
+          this.$zhongj.$emit('sending', '我是底部的信息')
+        }
+      }
+    }
+
+    let vm = new Vue({
+      el: '#app',
+      data: {},
+      methods: {},
+      components: {
+        headhtml,
+        bodyer,
+        foothtml
+      }
+    });
+  </script>
+</body>
+
+</html>
+<!-- Vue.prototype.$bus=new Vue()//在vue上面挂载一个$bus作为中央处理组件
+this.$bus.$emit('自定义事件名','传递的数据')//触发自定义事件传递数据.
+this.$bus.$on('自定义事件名'，fn)//监听自定义事件获取数据 -->

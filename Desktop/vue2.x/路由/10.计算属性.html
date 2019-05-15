@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+</head>
+<div id="app">
+  <input type="text" v-model="firstname"> +
+  <input type="text" v-model="middlename"> =
+  <input type="text" v-model="fullname">
+
+  <p>{{ fullname }}</p>
+  <p>{{ fullname }}</p>
+  <p>{{ fullname }}</p>
+
+</div>
+<script>
+  let vm = new Vue({
+    el: '#app',
+    data: {
+      firstname: '',
+      middlename: ''
+    },
+    methods: {},
+    computed: {
+      'fullname': function () {
+        console.log('ok');
+        return this.firstname + '-' + this.middlename;
+      }
+    },
+  });
+  // 在 computed 中我们可以把我们中要得到的属性，定义为计算属性的，本质，就是 一个方法
+  //他不需要在data中定义
+  //只要 计算属性，这个 function 内部，所用到的 任何 data 中的数据发送了变化，就会 立即调用重新计算 这个 计算属性的值
+  // 计算属性的求值结果，会被缓存起来，方便下次直接使用；(打开浏览器都会先调用一次这个函数)
+  //而且就算你手动在文本框自动修改计算属性的值，他的插座{{}}里面也不会变化
+</script>
+
+<body>
+
+</body>
+
+</html>

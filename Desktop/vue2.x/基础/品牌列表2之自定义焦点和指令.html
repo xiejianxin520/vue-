@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+  <link rel="stylesheet" href="./lib/bootstrap-3.3.7.css">
+  <!-- 需要用到Jquery吗？？？ -->
+</head>
+
+<body>
+  <div id="app">
+
+
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">添加品牌</h3>
+      </div>
+      <div class="panel-body form-inline">
+        <label>
+          Id:
+          <input type="text" class="form-control" v-model="id">
+        </label>
+
+        <label>
+          Name:
+          <input type="text" class="form-control" v-model="name" @keyup.113='add'>
+        </label>
+        <input type="button" value="添加" class="btn btn-primary" @click="add()">
+
+        <label>
+          搜索名称关键字：
+          <input type="text" class="form-control" v-model="keywords" v-focus v-color="'blue'">
+        </label>
+      </div>
+    </div>
+    <table class="table table-bordered table-hover table-striped">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>Ctime</th>
+          <th>Operation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 之前， v-for 中的数据，都是直接从 data 上的list中直接渲染过来的 -->
+        <!-- 现在， 我们自定义了一个 search 方法，同时，把 所有的关键字，通过传参的形式，传递给了 search 方法 -->
+        <!-- 在 search 方法内部，通过 执行 for 循环， 把所有符合 搜索关键字的数据，保存到 一个新数组中，返回 -->
+        <tr v-for='item in search(keywords)' :key='item.id'>
+          <td>{{item.id}}</td>
+          <td v-text='item.name'></td>
+          <td>{{item.time | guolv}}</td>
+          <!-- 可以传入实参给删除方法函数 -->
+          <td>
+            <a href="" @click.prevent="del(item.id)">删除</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="app2">
+    <h3 v-fontweight="90" v-fontsize='80'>私自定义过滤器{{ t | guolv}}</h3>
+  </div>
+  <script>
+    //全局过滤器
+    Vue.filter('guolv', function (a) {
+      var dt = new Date(a);
+      var y = dt.getFullYear();
+      var m = dt.getMonth() + 1;
+      var d = dt.getDay();
+      var h = dt.getHours();
+      var f = dt.getMinutes();
+      var s = dt.getSeconds();
+      // return y + '-' + m + '-' + d
+      return `${y}-${m}-${d} ${h}:${f}:${s}`
+    })
+    //自定义全局按键修饰符
+    Vue.config.keyCodes.f2 = 113;
+    // console.log(Vue.config.keyCodes.f2);
+
+    //自定义获取的焦点
+    // 使用  Vue.directive() 定义全局的指令
+    // 其中：参数1 ： 指令的名称，注意，在定义的时候，指令的名称前面，不需要加 v- 前缀, 
+    // 但是： 在调用的时候，必须 在指令名称前 加上 v- 前缀来进行调用
+    //  参数2： 是一个对象，这个对象身上，有一些指令相关的函数，这些函数可以在特定的阶段，执行相关的操作
+
+    // inserted 表示元素 插入到DOM中的时候，会执行 inserted 函数【触发1次】
+    // 和JS行为有关的操作，最好在 inserted 中去执行，放置 JS行为不生效
+    Vue.directive('focus', {
+      inserted: function (el) { // 和JS行为有关的操作，最好在 inserted 中去执行，放置 JS行为不生效
+        el.focus();
+      }
+    })
+    //自定义设置字体颜色指令
+    // 和样式相关的操作，一般都可以在 bind 执行
+    Vue.directive('color', {
+      bind: function (el, binding) {
+
+        //binding.value 为结果。比如 ‘1+1’，输出为2
+        // binding.expression为表达式。比如 ‘1+1’，输出为1+1
+        el.style.color = binding.value
+      }
+    })
+    //使用v-mode可以双向绑定给data的，然后在方法中可以之间对data的数据之间动手，就不用再去获取DOM的值
+    var vm = new Vue({
+      el: "#app",
+      data: {
+        id: '',
+        name: '',
+        keywords: '',
+        list: [{
+            id: 1,
+            name: '奔驰',
+            time: new Date()
+          },
+          {
+            id: 2,
+            name: '宝马',
+            time: new Date()
+          }
+        ]
+      },
+      methods: {
+        add() {
+          var newobj = {
+            id: this.id,
+            name: this.name,
+            time: new Date()
+          };
+          this.list.push(newobj);
+          this.id = this.name = '';
+        },
+        del(a) {
+          //第一种some()
+          //   var arry = this.list;
+          // arry.some(function(vals,i){
+          //   if (vals.id == a) {
+          //     arry.splice(i, 1)
+          //     return true;
+          //   }
+          // })
+          //要用箭头函数
+          //  this.list.some((vals, i) => {
+          //   if (vals.id == a) {
+          //     this.list.splice(i, 1)
+          //     return true;
+          //   }
+          // })
+
+          var index = this.list.findIndex(val => {
+            return val.id == a;
+          })
+          this.list.splice(index, 1)
+        },
+        search(keywords) { // 根据关键字作为绑定作为形参，进行数据的搜索
+          //第一种foreach
+
+          // var newarr = [];
+          // this.list.forEach(element => {
+          //   if(element.name.indexOf(keywords) != -1){
+          //     newarr.push(element)
+          //   }
+          // });
+          // return newarr;
+
+          //第二种fiflter
+          var newarr = this.list.filter(item => {
+            return item.name.includes(keywords)
+          })
+          return newarr;
+          //最后面都要把数组return结果回去，函数返回的结果才能在v-for中遍历
+        }
+
+
+      }
+    })
+
+    //私有自定义
+    var vm2 = new Vue({
+      el: "#app2",
+      data: {
+        t: new Date()
+      },
+      methods: {
+
+      },
+      filters: { // 过滤器调用的时候，采用的是就近原则，如果私有过滤器和全局过滤器名称一致了，这时候 优先调用私有过滤器
+        guolv: function (a) {
+          var dt = new Date(a);
+          var y = dt.getFullYear();
+          var m = (dt.getMonth() + 1).toString().padStart(2, '0'); //自动补齐两位数的时间
+          var d = dt.getDay().toString().padStart(2, '0');
+          var h = dt.getHours().toString().padStart(2, '0');
+          var f = dt.getMinutes().toString().padStart(2, '0');
+          var s = dt.getSeconds().toString().padStart(2, '0');
+
+          // return y + '-' + m + '-' + d
+          return `${y}-${m}-${d} ${h}:${f}:${s}`
+        }
+      },
+      directives: {
+        'fontweight': { // 设置字体粗细的
+          bind: function (el, binding) {
+            el.style.fontWeight = binding.value
+          }
+        }, //简写模式
+        'fontsize': function (el, binding) { // 注意：这个 function 等同于 把 代码写到了 bind 和 update 中去
+          el.style.fontSize = parseInt(binding.value) + 'px'
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
